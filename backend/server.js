@@ -26,12 +26,15 @@ app.use("/api/leaderboard", leaderboardRoutes);
 
 // Servir les fichiers statiques du frontend en production
 if (process.env.NODE_ENV === "production") {
-  // Servir les fichiers statiques du dossier build
-  app.use(express.static(path.join(__dirname, "../frontend/build")));
+  // Le chemin absolu vers le dossier build du frontend
+  const buildPath = path.join(__dirname, "../frontend/build");
+
+  // Servir les fichiers statiques
+  app.use(express.static(buildPath));
 
   // Pour toutes les autres routes, renvoyer index.html
   app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../frontend/build", "index.html"));
+    res.sendFile(path.join(buildPath, "index.html"));
   });
 } else {
   // Route racine pour l'environnement de développement
