@@ -4,7 +4,7 @@
   "description": "Application FitBuddy",
   "scripts": {
     "start": "cd backend && npm start",
-    "heroku-postbuild": "cd backend && npm install"
+    "heroku-postbuild": "cd backend && npm install && cd ../frontend && npm install && npm run build"
   },
   "engines": {
     "node": "18.x"
