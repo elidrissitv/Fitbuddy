@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Line } from "react-chartjs-2";
 import { getActivities } from "../services/api";
 import Leaderboard from "../components/Leaderboard";
+import ActivityChart from "../components/ActivityChart";
+import axios from "axios";
 
 const Dashboard = () => {
   const [activities, setActivities] = useState([]);
@@ -10,20 +12,26 @@ const Dashboard = () => {
     totalDistance: 0,
     totalDuration: 0,
   });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
+    const fetchActivities = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:5000/api/activities"
+        );
+        setActivities(response.data);
+        setLoading(false);
+        calculateStats(response.data);
+      } catch (err) {
+        setError("Erreur lors du chargement des activités");
+        setLoading(false);
+      }
+    };
+
     fetchActivities();
   }, []);
-
-  const fetchActivities = async () => {
-    try {
-      const data = await getActivities();
-      setActivities(data);
-      calculateStats(data);
-    } catch (error) {
-      console.error("Erreur lors de la récupération des activités:", error);
-    }
-  };
 
   const calculateStats = (activities) => {
     const totalActivities = activities.length;
@@ -90,8 +98,48 @@ const Dashboard = () => {
     };
   };
 
+  if (loading) return <div>Chargement...</div>;
+  if (error) return <div className="text-red-500">{error}</div>;
+
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
+      <h2 className="text-2xl font-bold mb-4">Tableau de bord</h2>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="bg-white p-4 rounded-lg shadow">
+          <h3 className="text-xl font-semibold mb-2">Statistiques</h3>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <p className="text-gray-600">Total des activités</p>
+              <p className="text-2xl font-bold">{activities.length}</p>
+            </div>
+            <div>
+              <p className="text-gray-600">Distance totale</p>
+              <p className="text-2xl font-bold">
+                {activities.reduce((sum, act) => sum + act.distance, 0)} km
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white p-4 rounded-lg shadow">
+          <h3 className="text-xl font-semibold mb-2">Dernière activité</h3>
+          {activities[0] ? (
+            <div>
+              <p>Type: {activities[0].type}</p>
+              <p>Distance: {activities[0].distance} km</p>
+              <p>Date: {new Date(activities[0].date).toLocaleDateString()}</p>
+            </div>
+          ) : (
+            <p>Aucune activité enregistrée</p>
+          )}
+        </div>
+      </div>
+
+      <div className="mt-6">
+        <ActivityChart activities={activities} />
+      </div>
+
       {/* Statistiques */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white dark:bg-dark p-6 rounded-lg shadow-md">
