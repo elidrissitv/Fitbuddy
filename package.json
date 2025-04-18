@@ -4,10 +4,16 @@
   "description": "Application FitBuddy",
   "scripts": {
     "start": "cd backend && npm start",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false && cd backend && npm install && cd ../frontend && npm install && npm install -g react-scripts@5.0.1 && CI=false npm run build && cd ../backend"
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false && cd backend && npm install && cd ../frontend && npm install && npm run build && cd ../backend",
+    "build": "cd frontend && npm run build"
   },
   "engines": {
     "node": "18.x",
     "npm": "10.x"
-  }
+  },
+  "cacheDirectories": [
+    "node_modules",
+    "frontend/node_modules",
+    "backend/node_modules"
+  ]
 }
