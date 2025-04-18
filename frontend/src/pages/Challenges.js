@@ -12,6 +12,7 @@ const Challenges = () => {
         const response = await axios.get(
           "http://localhost:5000/api/challenges"
         );
+        console.log("Données reçues:", JSON.stringify(response.data, null, 2));
         setChallenges(response.data);
         setLoading(false);
       } catch (err) {
@@ -49,75 +50,83 @@ const Challenges = () => {
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {challenges.map((challenge) => (
-          <article
-            key={challenge._id}
-            className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden"
-          >
-            <div className="p-6">
-              <header className="mb-4">
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                  {challenge.title}
-                </h3>
-                <p className="text-gray-600 line-clamp-2">
-                  {challenge.description}
-                </p>
-              </header>
-
-              <div className="space-y-4">
-                <div className="flex items-center justify-between border-t border-gray-100 pt-4">
-                  <div>
-                    <p className="text-sm font-medium text-gray-500">
-                      Objectif
-                    </p>
-                    <p className="text-lg font-semibold text-gray-900">
-                      {challenge.target} km
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-sm font-medium text-gray-500">
-                      Date de fin
-                    </p>
-                    <p className="text-gray-900">
-                      {new Date(challenge.endDate).toLocaleDateString()}
-                    </p>
-                  </div>
-                </div>
-
-                <div>
-                  <p className="text-sm font-medium text-gray-500 mb-2">
-                    Participants
+        {challenges.map((challenge) => {
+          console.log("Challenge:", challenge);
+          console.log("Participants:", challenge.participants);
+          return (
+            <article
+              key={challenge._id}
+              className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden"
+            >
+              <div className="p-6">
+                <header className="mb-4">
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                    {challenge.title}
+                  </h3>
+                  <p className="text-gray-600 line-clamp-2">
+                    {challenge.description}
                   </p>
-                  <div className="flex flex-wrap gap-2">
-                    {challenge.participants?.map((participant) => (
-                      <div
-                        key={participant._id}
-                        className="inline-flex items-center bg-gray-50 rounded-full px-3 py-1 hover:bg-gray-100 transition-colors"
-                      >
-                        {participant.avatarUrl && (
-                          <img
-                            src={participant.avatarUrl}
-                            alt={participant.pseudo}
-                            className="w-6 h-6 rounded-full mr-2 border border-gray-200"
-                          />
-                        )}
-                        <span className="text-sm text-gray-700 font-medium">
-                          {participant.pseudo}
-                        </span>
-                      </div>
-                    ))}
+                </header>
+
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between border-t border-gray-100 pt-4">
+                    <div>
+                      <p className="text-sm font-medium text-gray-500">
+                        Objectif
+                      </p>
+                      <p className="text-lg font-semibold text-gray-900">
+                        {challenge.goal} km
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm font-medium text-gray-500">
+                        Date de fin
+                      </p>
+                      <p className="text-gray-900">
+                        {new Date(challenge.endDate).toLocaleDateString()}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div>
+                    <p className="text-sm font-medium text-gray-500 mb-2">
+                      Participants ({challenge.participants?.length || 0})
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {Array.isArray(challenge.participants) &&
+                        challenge.participants.map((participant) => {
+                          console.log("Participant:", participant);
+                          return (
+                            <div
+                              key={participant._id}
+                              className="inline-flex items-center bg-gray-50 rounded-full px-3 py-1 hover:bg-gray-100 transition-colors"
+                            >
+                              {participant.avatarUrl && (
+                                <img
+                                  src={participant.avatarUrl}
+                                  alt={participant.pseudo}
+                                  className="w-6 h-6 rounded-full mr-2 border border-gray-200"
+                                />
+                              )}
+                              <span className="text-sm text-gray-700 font-medium">
+                                {participant.pseudo}
+                              </span>
+                            </div>
+                          );
+                        })}
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <footer className="mt-6">
-                <button className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200 font-medium">
-                  Rejoindre le défi
-                </button>
-              </footer>
-            </div>
-          </article>
-        ))}
+                <footer className="mt-6">
+                  <button className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200 font-medium">
+                    Rejoindre le défi
+                  </button>
+                </footer>
+              </div>
+            </article>
+          );
+        })}
       </div>
 
       {challenges.length === 0 && (

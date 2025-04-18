@@ -102,104 +102,128 @@ const Dashboard = () => {
   if (error) return <div className="text-red-500">{error}</div>;
 
   return (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-bold mb-4">Tableau de bord</h2>
+    <div className="space-y-8 max-w-7xl mx-auto">
+      {/* En-tête du Dashboard */}
+      <div className="text-center mb-8">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+          Tableau de bord
+        </h1>
+        <p className="text-gray-600 dark:text-gray-400">
+          Suivez vos performances et votre progression
+        </p>
+      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="bg-white p-4 rounded-lg shadow">
-          <h3 className="text-xl font-semibold mb-2">Statistiques</h3>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <p className="text-gray-600">Total des activités</p>
-              <p className="text-2xl font-bold">{activities.length}</p>
-            </div>
-            <div>
-              <p className="text-gray-600">Distance totale</p>
-              <p className="text-2xl font-bold">
-                {activities.reduce((sum, act) => sum + act.distance, 0)} km
-              </p>
+      {/* Cartes de statistiques */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow">
+          <h3 className="text-lg font-semibold text-gray-600 dark:text-gray-400 mb-2">
+            Activités
+          </h3>
+          <p className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+            {stats.totalActivities || 0}
+          </p>
+        </div>
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow">
+          <h3 className="text-lg font-semibold text-gray-600 dark:text-gray-400 mb-2">
+            Distance Totale
+          </h3>
+          <p className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+            {stats.totalDistance ? `${stats.totalDistance} km` : "0 km"}
+          </p>
+        </div>
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow">
+          <h3 className="text-lg font-semibold text-gray-600 dark:text-gray-400 mb-2">
+            Durée Totale
+          </h3>
+          <p className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+            {stats.totalDuration ? `${stats.totalDuration} min` : "0 min"}
+          </p>
+        </div>
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow">
+          <h3 className="text-lg font-semibold text-gray-600 dark:text-gray-400 mb-2">
+            Dernière Activité
+          </h3>
+          <p className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+            {activities[0]?.type || "Aucune"}
+          </p>
+        </div>
+      </div>
+
+      {/* Graphique d'activités */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+              Activités de la semaine
+            </h2>
+            <div className="h-[300px]">
+              <ActivityChart activities={activities} />
             </div>
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-lg shadow">
-          <h3 className="text-xl font-semibold mb-2">Dernière activité</h3>
-          {activities[0] ? (
-            <div>
-              <p>Type: {activities[0].type}</p>
-              <p>Distance: {activities[0].distance} km</p>
-              <p>Date: {new Date(activities[0].date).toLocaleDateString()}</p>
+        {/* Classement */}
+        <div className="lg:col-span-1">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+              Top 3 du classement
+            </h2>
+            <Leaderboard />
+          </div>
+        </div>
+      </div>
+
+      {/* Dernières activités */}
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow">
+        <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+          Dernières activités
+        </h2>
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead className="bg-gray-50 dark:bg-gray-900">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  Date
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  Type
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  Durée
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  Distance
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+              {activities.slice(0, 5).map((activity, index) => (
+                <tr
+                  key={index}
+                  className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                >
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
+                    {new Date(activity.date).toLocaleDateString()}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
+                    {activity.type}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
+                    {activity.duration} min
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
+                    {activity.distance} km
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {activities.length === 0 && (
+            <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+              Aucune activité enregistrée
             </div>
-          ) : (
-            <p>Aucune activité enregistrée</p>
           )}
         </div>
-      </div>
-
-      <div className="mt-6">
-        <ActivityChart activities={activities} />
-      </div>
-
-      {/* Statistiques */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white dark:bg-dark p-6 rounded-lg shadow-md">
-          <h3 className="text-lg font-semibold text-gray-600 dark:text-gray-400">
-            Activités
-          </h3>
-          <p className="text-3xl font-bold text-gray-800 dark:text-gray-200">
-            {stats.totalActivities}
-          </p>
-        </div>
-        <div className="bg-white dark:bg-dark p-6 rounded-lg shadow-md">
-          <h3 className="text-lg font-semibold text-gray-600 dark:text-gray-400">
-            Distance Totale
-          </h3>
-          <p className="text-3xl font-bold text-gray-800 dark:text-gray-200">
-            {stats.totalDistance} km
-          </p>
-        </div>
-        <div className="bg-white dark:bg-dark p-6 rounded-lg shadow-md">
-          <h3 className="text-lg font-semibold text-gray-600 dark:text-gray-400">
-            Durée Totale
-          </h3>
-          <p className="text-3xl font-bold text-gray-800 dark:text-gray-200">
-            {stats.totalDuration} min
-          </p>
-        </div>
-      </div>
-
-      {/* Graphique */}
-      <div className="bg-white dark:bg-dark p-6 rounded-lg shadow-md">
-        <h2 className="text-xl font-bold mb-4 text-gray-800 dark:text-gray-200">
-          Activités de la semaine
-        </h2>
-        <div className="h-64">
-          <Line
-            data={getWeeklyData()}
-            options={{
-              responsive: true,
-              maintainAspectRatio: false,
-              plugins: {
-                legend: {
-                  position: "top",
-                },
-              },
-              scales: {
-                y: {
-                  beginAtZero: true,
-                },
-              },
-            }}
-          />
-        </div>
-      </div>
-
-      {/* Top 3 du classement */}
-      <div className="bg-white dark:bg-dark p-6 rounded-lg shadow-md">
-        <h2 className="text-xl font-bold mb-4 text-gray-800 dark:text-gray-200">
-          Top 3 du classement
-        </h2>
-        <Leaderboard />
       </div>
     </div>
   );

@@ -5,9 +5,33 @@ const User = require("../models/User");
 exports.getAllChallenges = async (req, res) => {
   try {
     const challenges = await Challenge.find()
-      .populate("participants", "pseudo avatarUrl")
+      .populate({
+        path: "participants",
+        select: "pseudo avatarUrl",
+        model: "User",
+      })
       .sort({ startDate: -1 });
-    res.json(challenges);
+
+    // S'assurer que les participants sont bien des tableaux et formatés correctement
+    const formattedChallenges = challenges.map((challenge) => {
+      const challengeObj = challenge.toObject();
+      return {
+        ...challengeObj,
+        participants: Array.isArray(challengeObj.participants)
+          ? challengeObj.participants.map((participant) => ({
+              _id: participant._id,
+              pseudo: participant.pseudo,
+              avatarUrl: participant.avatarUrl,
+            }))
+          : [],
+      };
+    });
+
+    console.log(
+      "Challenges formatés:",
+      JSON.stringify(formattedChallenges, null, 2)
+    );
+    res.json(formattedChallenges);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -24,6 +48,7 @@ exports.createChallenge = async (req, res) => {
       type,
       goal,
       endDate: new Date(endDate),
+      participants: [], // Initialiser avec un tableau vide
     });
 
     const savedChallenge = await challenge.save();
@@ -66,7 +91,26 @@ exports.joinChallenge = async (req, res) => {
     user.challenges.push(challengeId);
     await user.save();
 
-    res.json({ message: "Vous avez rejoint le défi avec succès" });
+    // Récupérer le défi mis à jour avec les participants peuplés
+    const updatedChallenge = await Challenge.findById(challengeId).populate({
+      path: "participants",
+      select: "pseudo avatarUrl",
+      model: "User",
+    });
+
+    // Formater les données avant de les renvoyer
+    const formattedChallenge = {
+      ...updatedChallenge.toObject(),
+      participants: Array.isArray(updatedChallenge.participants)
+        ? updatedChallenge.participants.map((participant) => ({
+            _id: participant._id,
+            pseudo: participant.pseudo,
+            avatarUrl: participant.avatarUrl,
+          }))
+        : [],
+    };
+
+    res.json(formattedChallenge);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }

@@ -42,7 +42,7 @@ const ChallengeBoard = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {challenges.map((challenge) => (
           <div
-            key={challenge.id}
+            key={challenge._id}
             className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg shadow-sm"
           >
             <div className="flex justify-between items-start mb-4">
@@ -50,7 +50,7 @@ const ChallengeBoard = () => {
                 {challenge.title}
               </h3>
               <span className="px-3 py-1 text-sm rounded-full bg-primary text-white">
-                {challenge.participants} participants
+                {challenge.participants?.length || 0} participants
               </span>
             </div>
 
@@ -81,8 +81,34 @@ const ChallengeBoard = () => {
               </div>
             </div>
 
+            <div className="mb-4">
+              <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
+                Participants:
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {Array.isArray(challenge.participants) &&
+                  challenge.participants.map((participant) => (
+                    <div
+                      key={participant._id}
+                      className="inline-flex items-center bg-gray-100 dark:bg-gray-700 rounded-full px-3 py-1"
+                    >
+                      {participant.avatarUrl && (
+                        <img
+                          src={participant.avatarUrl}
+                          alt={participant.pseudo}
+                          className="w-6 h-6 rounded-full mr-2"
+                        />
+                      )}
+                      <span className="text-sm text-gray-700 dark:text-gray-300">
+                        {participant.pseudo}
+                      </span>
+                    </div>
+                  ))}
+              </div>
+            </div>
+
             <button
-              onClick={() => handleJoinChallenge(challenge.id)}
+              onClick={() => handleJoinChallenge(challenge._id)}
               className="w-full bg-primary text-white py-2 px-4 rounded hover:bg-blue-600 transition-colors"
             >
               Rejoindre le défi

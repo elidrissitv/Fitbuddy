@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
 import Navbar from "./components/Navbar";
 import Dashboard from "./pages/Dashboard";
@@ -13,17 +13,7 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <header className="App-header">
-          <h1>FitBuddy</h1>
-        </header>
         <Navbar />
-        <nav className="nav-links">
-          <Link to="/">Accueil</Link>
-          <Link to="/activities">Activités</Link>
-          <Link to="/challenges">Défis</Link>
-          <Link to="/leaderboard">Classement</Link>
-          <Link to="/profile">Profil</Link>
-        </nav>
         <main className="container mx-auto px-4 py-8">
           <Routes>
             <Route path="/" element={<Dashboard />} />

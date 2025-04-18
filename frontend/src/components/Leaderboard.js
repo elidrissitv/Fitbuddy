@@ -37,7 +37,7 @@ const Leaderboard = () => {
       <div className="space-y-4">
         {leaderboard.map((user, index) => (
           <div
-            key={user.id}
+            key={user._id}
             className={`flex items-center justify-between p-4 rounded-lg ${
               index === 0
                 ? "bg-yellow-100 dark:bg-yellow-900"
@@ -58,13 +58,22 @@ const Leaderboard = () => {
                   ? "🥉"
                   : `${index + 1}.`}
               </span>
-              <div>
-                <h3 className="font-semibold text-gray-800 dark:text-gray-200">
-                  {user.username}
-                </h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  {user.totalPoints} points
-                </p>
+              <div className="flex items-center space-x-3">
+                {user.avatarUrl && (
+                  <img
+                    src={user.avatarUrl}
+                    alt={user.pseudo}
+                    className="w-10 h-10 rounded-full"
+                  />
+                )}
+                <div>
+                  <h3 className="font-semibold text-gray-800 dark:text-gray-200">
+                    {user.pseudo}
+                  </h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    {user.points} points
+                  </p>
+                </div>
               </div>
             </div>
             <div className="text-right">
