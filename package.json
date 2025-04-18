@@ -1,0 +1,12 @@
+{
+  "name": "fitbuddy",
+  "version": "1.0.0",
+  "description": "Application FitBuddy",
+  "scripts": {
+    "start": "cd backend && npm start",
+    "heroku-postbuild": "cd backend && npm install"
+  },
+  "engines": {
+    "node": "18.x"
+  }
+}
