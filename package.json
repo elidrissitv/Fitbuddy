@@ -1,11 +1,11 @@
 {
   "name": "fitbuddy",
   "version": "1.0.0",
-  "description": "Application FitBuddy",
+  "description": "Application de suivi d'activités physiques",
+  "main": "backend/server.js",
   "scripts": {
     "start": "cd backend && npm start",
-    "heroku-postbuild": "cd backend && npm install && cd ../frontend && npm install && npm run build && cd ..",
-    "build": "cd frontend && npm run build"
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix backend && npm install --prefix frontend && npm run build --prefix frontend"
   },
   "engines": {
     "node": "18.x",
