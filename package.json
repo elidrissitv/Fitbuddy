@@ -6,9 +6,9 @@
   "scripts": {
     "start": "cd backend && npm start",
     "install-backend": "cd backend && npm install",
-    "install-frontend": "cd frontend && npm install",
+    "install-frontend": "cd frontend && npm install --legacy-peer-deps",
     "build": "cd frontend && npm run build",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false && npm run install-backend && npm run install-frontend && npm run build"
+    "heroku-postbuild": "npm run install-backend && npm run install-frontend && npm run build"
   },
   "engines": {
     "node": "18.x",
