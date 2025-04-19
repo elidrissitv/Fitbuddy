@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:5000/api";
+const API_URL = process.env.REACT_APP_API_URL || "/api";
 
 const api = axios.create({
   baseURL: API_URL,
@@ -8,6 +8,19 @@ const api = axios.create({
     "Content-Type": "application/json",
   },
 });
+
+// Intercepteur pour gérer les erreurs globalement
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    console.error("Erreur API:", error);
+    if (error.response) {
+      // Erreur serveur avec réponse
+      console.error("Détails:", error.response.data);
+    }
+    return Promise.reject(error);
+  }
+);
 
 export const getActivities = async () => {
   try {

@@ -5,11 +5,17 @@
   "main": "backend/server.js",
   "scripts": {
     "start": "cd backend && npm start",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix backend && npm install --prefix frontend && npm run build --prefix frontend"
+    "install-all": "npm install && cd backend && npm install && cd ../frontend && npm install",
+    "build": "cd frontend && npm run build",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm run install-all && npm run build",
+    "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm start\""
   },
   "engines": {
     "node": "18.x",
     "npm": "10.x"
+  },
+  "dependencies": {
+    "concurrently": "^8.2.2"
   },
   "cacheDirectories": [
     "node_modules",
