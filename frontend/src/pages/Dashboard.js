@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { Line } from "react-chartjs-2";
-import { getActivities } from "../services/api";
 import Leaderboard from "../components/Leaderboard";
 import ActivityChart from "../components/ActivityChart";
 import axios from "axios";
@@ -49,53 +47,6 @@ const Dashboard = () => {
       totalDistance,
       totalDuration,
     });
-  };
-
-  const getWeeklyData = () => {
-    const last7Days = Array.from({ length: 7 }, (_, i) => {
-      const d = new Date();
-      d.setDate(d.getDate() - i);
-      return d.toISOString().split("T")[0];
-    }).reverse();
-
-    const dailyData = last7Days.map((date) => {
-      const dayActivities = activities.filter(
-        (activity) => activity.date === date
-      );
-      return {
-        date,
-        distance: dayActivities.reduce(
-          (sum, activity) => sum + (activity.distance || 0),
-          0
-        ),
-        duration: dayActivities.reduce(
-          (sum, activity) => sum + (activity.duration || 0),
-          0
-        ),
-      };
-    });
-
-    return {
-      labels: dailyData.map((data) =>
-        new Date(data.date).toLocaleDateString("fr-FR", { weekday: "short" })
-      ),
-      datasets: [
-        {
-          label: "Distance (km)",
-          data: dailyData.map((data) => data.distance),
-          borderColor: "rgb(59, 130, 246)",
-          backgroundColor: "rgba(59, 130, 246, 0.1)",
-          tension: 0.4,
-        },
-        {
-          label: "Durée (min)",
-          data: dailyData.map((data) => data.duration),
-          borderColor: "rgb(16, 185, 129)",
-          backgroundColor: "rgba(16, 185, 129, 0.1)",
-          tension: 0.4,
-        },
-      ],
-    };
   };
 
   if (loading) return <div>Chargement...</div>;

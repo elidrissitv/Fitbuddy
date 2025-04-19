@@ -17,7 +17,7 @@ const Profile = () => {
       setUsername(savedUsername);
     }
     fetchActivities();
-  }, []);
+  }, [fetchActivities]);
 
   const fetchActivities = async () => {
     try {
