@@ -1,221 +1,148 @@
-# 🏃‍♂️ FitBuddy — Suivi d'Activités Physiques
+# FitBuddy - Application de Suivi d'Activités Physiques
 
-**FitBuddy** est une application web moderne qui permet aux utilisateurs de suivre leurs activités physiques, participer à des défis sportifs et comparer leurs performances avec une communauté.
+FitBuddy est une application web moderne qui permet aux utilisateurs de suivre leurs activités physiques, participer à des défis et se mesurer aux autres utilisateurs via un classement.
 
----
+## Fonctionnalités
 
-## 🌟 Fonctionnalités
+- 📱 **Tableau de bord personnalisé** : Visualisez vos statistiques d'activités
+- 🏃 **Suivi d'activités** : Enregistrez vos activités physiques (course, marche, vélo, etc.)
+- 🏆 **Système de points** : Gagnez des points en fonction de vos activités
+- 🎯 **Défis** : Participez à des défis communautaires
+- 📊 **Classement** : Consultez le classement des utilisateurs
+- 👤 **Profil utilisateur** : Gérez vos informations personnelles
+- 🌙 **Mode sombre** : Interface adaptative jour/nuit
 
-### 📊 Tableau de Bord Personnalisé
-
-- Visualisation des statistiques personnelles
-- Graphiques hebdomadaires d'activité
-- Suivi des performances et progrès
-
-### 🎯 Activités
-
-- Enregistrement d'activités variées : course, yoga, musculation, vélo, natation, etc.
-- Suivi de la **durée** et de la **distance**
-- Historique détaillé des séances
-
-### 🏆 Défis
-
-- Rejoindre ou créer des défis communautaires
-- Classement en temps réel
-- Objectifs personnalisés par utilisateur ou par groupe
-
-### 🏅 Classement
-
-- Système de points intelligent
-- Classement global entre les utilisateurs
-- Mise en avant du **Top 3**
-
----
-
-## 🛠️ Technologies Utilisées
+## Technologies Utilisées
 
 ### Frontend
 
-- ⚛️ React.js
-- 💨 Tailwind CSS
-- 📈 Chart.js pour les visualisations
-- 🔁 React Router pour la navigation
-- 🔌 Axios pour les appels API
+- React.js
+- Tailwind CSS
+- Chart.js pour les visualisations
+- Axios pour les requêtes API
 
 ### Backend
 
-- 🌐 Node.js
-- 🚂 Express.js
-- 🗃️ MongoDB
-- 🧩 Mongoose pour la gestion des modèles de données
+- Node.js
+- Express.js
+- MongoDB
+- Mongoose
+- JWT pour l'authentification
 
----
+## Installation
 
-## 📦 Installation & Lancement
+### Prérequis
 
-### 1. Cloner le projet
+- Node.js (v14 ou supérieur)
+- MongoDB
+- npm ou yarn
+
+### Configuration
+
+1. Clonez le dépôt :
 
 ```bash
-git clone [URL_DU_REPO]
-cd FitBuddy
+git clone https://github.com/elidrissitv/fitbuddy.git
+cd fitbuddy
 ```
 
-### 2. Installer les dépendances
+2. Installez les dépendances du backend :
 
 ```bash
-# Frontend
-cd frontend
-npm install
-
-# Backend
-cd ../backend
+cd backend
 npm install
 ```
 
-### 3. Configuration de l'environnement
+3. Configurez les variables d'environnement :
+   Créez un fichier `.env` dans le dossier backend avec :
 
-Créer un fichier `.env` dans le dossier `backend` avec le contenu suivant :
-
-```env
-PORT=5000
+```
 MONGODB_URI=votre_uri_mongodb
+JWT_SECRET=votre_secret_jwt
 ```
 
-### 4. Lancer l'application
+4. Installez les dépendances du frontend :
 
 ```bash
-# Lancer le backend
+cd ../frontend
+npm install
+```
+
+## Démarrage
+
+1. Démarrez le serveur backend :
+
+```bash
 cd backend
 npm start
+```
 
-# Lancer le frontend dans un terminal séparé
-cd ../frontend
+2. Démarrez le serveur frontend :
+
+```bash
+cd frontend
 npm start
 ```
 
----
+L'application sera accessible à l'adresse `http://localhost:3000`
 
-## 🧱 Structure du Projet
+## Structure du Projet
 
 ```
-FitBuddy/
+fitbuddy/
+├── backend/
+│   ├── controllers/     # Logique métier
+│   ├── models/         # Modèles MongoDB
+│   ├── routes/         # Routes API
+│   ├── middleware/     # Middleware Express
+│   └── server.js       # Point d'entrée du serveur
 ├── frontend/
 │   ├── src/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   ├── services/
-│   │   └── App.js
-│   └── public/
-└── backend/
-    ├── controllers/
-    ├── models/
-    ├── routes/
-    └── server.js
+│   │   ├── components/ # Composants React
+│   │   ├── pages/      # Pages de l'application
+│   │   ├── services/   # Services API
+│   │   └── App.js      # Point d'entrée React
+│   └── public/         # Fichiers statiques
+└── README.md
 ```
 
----
+## API Endpoints
 
-## 🔒 Modélisation des Données
+### Authentification
 
-### 👤 Utilisateur (User)
+- `POST /api/auth/register` - Inscription
+- `POST /api/auth/login` - Connexion
 
-```js
-{
-  pseudo: String,
-  points: Number,
-  avatarUrl: String,
-  activities: [Activity],
-  challenges: [Challenge]
-}
-```
+### Activités
 
-### 🏃 Activité (Activity)
+- `GET /api/activities` - Liste des activités
+- `POST /api/activities` - Créer une activité
+- `GET /api/activities/:id` - Détails d'une activité
 
-```js
-{
-  type: String,
-  duration: Number,
-  distance: Number,
-  user: User,
-  date: Date,
-  points: Number
-}
-```
+### Défis
 
-### 🎯 Défi (Challenge)
+- `GET /api/challenges` - Liste des défis
+- `POST /api/challenges` - Créer un défi
+- `GET /api/challenges/:id` - Détails d'un défi
 
-```js
-{
-  title: String,
-  description: String,
-  type: String,
-  goal: Number,
-  participants: [User],
-  startDate: Date,
-  endDate: Date,
-  status: String
-}
-```
+### Classement
 
----
+- `GET /api/leaderboard` - Classement des utilisateurs
 
-## 🔌 API Endpoints
+## Contribution
 
-### 👥 Utilisateurs
-
-- `GET /api/users` : Obtenir la liste des utilisateurs
-- `GET /api/users/:id` : Obtenir les infos d'un utilisateur
-- `POST /api/users` : Créer un nouvel utilisateur
-
-### 🏃 Activités
-
-- `GET /api/activities` : Récupérer toutes les activités
-- `POST /api/activities` : Créer une nouvelle activité
-- `GET /api/activities/:id` : Obtenir une activité spécifique
-
-### 🎯 Défis
-
-- `GET /api/challenges` : Récupérer tous les défis
-- `POST /api/challenges` : Créer un défi
-- `PUT /api/challenges/:id/join` : Rejoindre un défi
-
----
-
-## 🎨 Personnalisation
-
-L'interface est développée avec Tailwind CSS, facilitant une personnalisation rapide grâce aux classes utilitaires.  
-🌓 **Support du mode sombre inclus !**
-
----
-
-## 🤝 Contribution
-
-Les contributions sont les bienvenues !  
-Voici comment contribuer :
+Les contributions sont les bienvenues ! N'hésitez pas à :
 
 1. Fork le projet
-2. Crée une branche pour ta fonctionnalité
-3. Commits tes modifications
-4. Pousse la branche
-5. Ouvre une Pull Request 🙌
+2. Créer une branche pour votre fonctionnalité
+3. Commiter vos changements
+4. Pousser vers la branche
+5. Ouvrir une Pull Request
 
----
+## Licence
 
-## 📄 Licence
+Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
 
-Distribué sous la licence MIT.  
-Voir le fichier `LICENSE.md` pour plus d'informations.
+## Contact
 
----
-
-## 👥 Auteurs
-
-[Votre Nom] – Développement initial
-
----
-
-## 🙏 Remerciements
-
-- La communauté React pour leur superbe écosystème
-- Les contributeurs de Tailwind CSS pour leur flexibilité de design
-- L'équipe MongoDB pour leur base de données performante
+Pour toute question ou suggestion, n'hésitez pas à nous contacter à [votre-email@example.com](mailto:itsmenulled@gmail.com)
