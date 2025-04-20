@@ -145,4 +145,4 @@ Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
 
 ## Contact
 
-Pour toute question ou suggestion, n'hésitez pas à nous contacter à [votre-email@example.com](mailto:itsmenulled@gmail.com)
+Pour toute question ou suggestion, n'hésitez pas à nous contacter à [itsmenulled@gmail.com](mailto:itsmenulled@gmail.com)
