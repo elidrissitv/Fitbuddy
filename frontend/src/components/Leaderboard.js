@@ -62,13 +62,13 @@ const Leaderboard = () => {
                 {user.avatarUrl && (
                   <img
                     src={user.avatarUrl}
-                    alt={user.pseudo}
+                    alt={user.username}
                     className="w-10 h-10 rounded-full"
                   />
                 )}
                 <div>
                   <h3 className="font-semibold text-gray-800 dark:text-gray-200">
-                    {user.pseudo}
+                    {user.username}
                   </h3>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
                     {user.points} points
@@ -78,10 +78,7 @@ const Leaderboard = () => {
             </div>
             <div className="text-right">
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                {user.activitiesCount} activités
-              </p>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                {user.totalDistance} km
+                {user.activities?.length || 0} activités
               </p>
             </div>
           </div>

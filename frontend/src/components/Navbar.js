@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import fitbuddyLogo from "../components/fitbuddy.png";
-import { FaSignOutAlt } from "react-icons/fa";
 
 const Navbar = () => {
   const [darkMode, setDarkMode] = useState(false);
   const [username, setUsername] = useState("");
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     const savedUsername = localStorage.getItem("username");
-    if (savedUsername) {
+    const userId = localStorage.getItem("userId");
+    if (savedUsername && userId) {
       setUsername(savedUsername);
+      setIsAuthenticated(true);
     }
   }, []);
 
@@ -24,13 +26,12 @@ const Navbar = () => {
   }, [darkMode]);
 
   const handleLogout = () => {
+    localStorage.removeItem("userId");
     localStorage.removeItem("username");
+    setIsAuthenticated(false);
+    setUsername("");
     navigate("/auth");
   };
-
-  if (!username) {
-    return null;
-  }
 
   return (
     <nav className="bg-white dark:bg-gray-800 shadow-lg sticky top-0 z-50">
@@ -51,36 +52,56 @@ const Navbar = () => {
           </Link>
 
           <div className="flex items-center space-x-6">
-            <Link
-              to="/"
-              className="text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium"
-            >
-              Dashboard
-            </Link>
-            <Link
-              to="/activities"
-              className="text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium"
-            >
-              Activités
-            </Link>
-            <Link
-              to="/challenges"
-              className="text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium"
-            >
-              Défis
-            </Link>
-            <Link
-              to="/leaderboard"
-              className="text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium"
-            >
-              Classement
-            </Link>
-            <Link
-              to="/profile"
-              className="text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium"
-            >
-              Profil
-            </Link>
+            {isAuthenticated ? (
+              <>
+                <Link
+                  to="/dashboard"
+                  className="text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium"
+                >
+                  Dashboard
+                </Link>
+                <Link
+                  to="/activities"
+                  className="text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium"
+                >
+                  Activités
+                </Link>
+                <Link
+                  to="/challenges"
+                  className="text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium"
+                >
+                  Défis
+                </Link>
+                <Link
+                  to="/leaderboard"
+                  className="text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium"
+                >
+                  Classement
+                </Link>
+                <Link
+                  to="/profile"
+                  className="text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium"
+                >
+                  Profil
+                </Link>
+                <span className="text-gray-700 dark:text-gray-200 font-medium px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-full">
+                  {username}
+                </span>
+                <button
+                  onClick={handleLogout}
+                  className="text-gray-700 dark:text-gray-200 hover:text-red-600 dark:hover:text-red-400 transition-colors font-medium"
+                >
+                  Déconnexion
+                </button>
+              </>
+            ) : (
+              <Link
+                to="/auth"
+                className="text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium"
+              >
+                Connexion
+              </Link>
+            )}
 
             <button
               onClick={() => setDarkMode(!darkMode)}
@@ -88,14 +109,6 @@ const Navbar = () => {
               aria-label="Toggle dark mode"
             >
               {darkMode ? "🌞" : "🌙"}
-            </button>
-
-            <button
-              onClick={handleLogout}
-              className="flex items-center text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium"
-            >
-              <FaSignOutAlt className="mr-2" />
-              Déconnexion
             </button>
           </div>
         </div>

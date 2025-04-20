@@ -1,15 +1,15 @@
 import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { FaSpinner } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import api from "../services/api";
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
     username: "",
+    password: "",
   });
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({
@@ -20,118 +20,115 @@ const Auth = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
     setError("");
-    setSuccess("");
 
     try {
-      // Simuler une requête API
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const endpoint = isLogin ? "/auth/login" : "/auth/register";
+      console.log(
+        "Tentative de connexion à:",
+        endpoint,
+        "avec:",
+        formData.username
+      );
 
-      if (isLogin) {
-        // Logique de connexion
-        localStorage.setItem("username", formData.username);
-        setSuccess("Connexion réussie !");
-      } else {
-        // Logique d'inscription
-        localStorage.setItem("username", formData.username);
-        setSuccess("Inscription réussie !");
+      const response = await api.post(endpoint, formData);
+      console.log("Réponse reçue:", response.data);
+
+      if (response.data.success && response.data.user) {
+        localStorage.setItem("userId", response.data.user._id);
+        localStorage.setItem("username", response.data.user.username);
+
+        // Déclencher un événement personnalisé pour notifier le changement d'état d'authentification
+        window.dispatchEvent(new Event("authStateChanged"));
+
+        navigate("/dashboard");
       }
     } catch (err) {
-      setError("Une erreur est survenue. Veuillez réessayer.");
-    } finally {
-      setLoading(false);
+      console.error("Erreur de connexion:", err.response?.data || err.message);
+      setError(err.response?.data?.message || "Une erreur est survenue");
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800 p-4">
-      <motion.div
-        className="w-full max-w-md"
-        initial={{ scale: 0.9, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.5 }}
-      >
-        <div className="relative">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={isLogin ? "login" : "register"}
-              className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8"
-              initial={{ rotateY: 90 }}
-              animate={{ rotateY: 0 }}
-              exit={{ rotateY: -90 }}
-              transition={{ duration: 0.5 }}
-            >
-              <div className="text-center mb-8">
-                <h1 className="text-3xl font-bold text-gray-800 dark:text-white mb-2">
-                  {isLogin ? "Connexion" : "Inscription"}
-                </h1>
-                <p className="text-gray-600 dark:text-gray-300">
-                  {isLogin
-                    ? "Bienvenue sur FitBuddy !"
-                    : "Rejoignez la communauté FitBuddy !"}
-                </p>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8">
+        <div className="text-center">
+          <h2 className="mt-6 text-3xl font-extrabold text-gray-900 dark:text-white">
+            {isLogin ? "Connexion à FitBuddy" : "Inscription à FitBuddy"}
+          </h2>
+        </div>
+
+        <div className="mt-8">
+          <div className="bg-white dark:bg-gray-800 py-8 px-4 shadow-lg rounded-lg transform transition-all duration-500 hover:scale-105">
+            <form className="space-y-6" onSubmit={handleSubmit}>
+              {error && (
+                <div
+                  className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+                  role="alert"
+                >
+                  <span className="block sm:inline">{error}</span>
+                </div>
+              )}
+
+              <div>
+                <label
+                  htmlFor="username"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                  Nom d'utilisateur
+                </label>
+                <input
+                  id="username"
+                  name="username"
+                  type="text"
+                  required
+                  value={formData.username}
+                  onChange={handleChange}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white"
+                />
               </div>
 
-              {error && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4"
+              <div>
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
                 >
-                  {error}
-                </motion.div>
-              )}
+                  Mot de passe
+                </label>
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  required
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white"
+                />
+              </div>
 
-              {success && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4"
-                >
-                  {success}
-                </motion.div>
-              )}
-
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div>
-                  <label className="block text-gray-700 dark:text-gray-300 mb-2">
-                    Pseudo
-                  </label>
-                  <input
-                    type="text"
-                    name="username"
-                    value={formData.username}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
-                    required
-                  />
-                </div>
-
+              <div>
                 <button
                   type="submit"
-                  disabled={loading}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300 flex items-center justify-center"
+                  className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
-                  {loading ? <FaSpinner className="animate-spin mr-2" /> : null}
                   {isLogin ? "Se connecter" : "S'inscrire"}
                 </button>
-              </form>
-
-              <div className="mt-6 text-center">
-                <button
-                  onClick={() => setIsLogin(!isLogin)}
-                  className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition duration-300"
-                >
-                  {isLogin
-                    ? "Pas encore de compte ? S'inscrire"
-                    : "Déjà un compte ? Se connecter"}
-                </button>
               </div>
-            </motion.div>
-          </AnimatePresence>
+            </form>
+
+            <div className="mt-6 text-center">
+              <button
+                onClick={() => setIsLogin(!isLogin)}
+                className="text-sm text-indigo-600 hover:text-indigo-500 dark:text-indigo-400"
+              >
+                {isLogin
+                  ? "Pas encore de compte ? S'inscrire"
+                  : "Déjà un compte ? Se connecter"}
+              </button>
+            </div>
+          </div>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 };
