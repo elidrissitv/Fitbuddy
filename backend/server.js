@@ -20,27 +20,25 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Routes
-const userRoutes = require("./routes/users");
-const activityRoutes = require("./routes/activities");
-const challengeRoutes = require("./routes/challenges");
-const leaderboardRoutes = require("./routes/leaderboard");
-
+// Routes API
 app.use("/api/auth", require("./routes/auth"));
-app.use("/api/users", userRoutes);
-app.use("/api/activities", activityRoutes);
-app.use("/api/challenges", challengeRoutes);
-app.use("/api/leaderboard", leaderboardRoutes);
+app.use("/api/users", require("./routes/users"));
+app.use("/api/activities", require("./routes/activities"));
+app.use("/api/challenges", require("./routes/challenges"));
+app.use("/api/leaderboard", require("./routes/leaderboard"));
 
-// Serve static files from the React app
-app.use(express.static(path.join(__dirname, "../frontend/build")));
+// Configuration pour servir les fichiers statiques en production
+if (process.env.NODE_ENV === "production") {
+  // Servir les fichiers statiques du frontend
+  app.use(express.static(path.join(__dirname, "../frontend/build")));
 
-// The "catchall" handler: for any request that doesn't match one above, send back React's index.html file.
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../frontend/build", "index.html"));
-});
+  // Gérer les routes React
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "../frontend/build", "index.html"));
+  });
+}
 
-// MongoDB Connection
+// Connexion à MongoDB
 console.log(
   "Tentative de connexion à MongoDB avec l'URL:",
   process.env.MONGODB_URI
@@ -75,7 +73,7 @@ app.use((err, req, res, next) => {
   console.error("Erreur serveur:", err);
   res.status(500).json({
     message: "Une erreur est survenue",
-    error: err.message,
+    error: process.env.NODE_ENV === "development" ? err.message : undefined,
   });
 });
 
