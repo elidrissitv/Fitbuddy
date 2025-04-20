@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { getActivities } from "../services/api";
 
 const Profile = () => {
@@ -11,15 +11,7 @@ const Profile = () => {
     favoriteActivity: "",
   });
 
-  useEffect(() => {
-    const savedUsername = localStorage.getItem("username");
-    if (savedUsername) {
-      setUsername(savedUsername);
-    }
-    fetchActivities();
-  }, [fetchActivities]);
-
-  const fetchActivities = async () => {
+  const fetchActivities = useCallback(async () => {
     try {
       const data = await getActivities();
       setActivities(data);
@@ -27,7 +19,7 @@ const Profile = () => {
     } catch (error) {
       console.error("Erreur lors de la récupération des activités:", error);
     }
-  };
+  }, []);
 
   const calculateStats = (activities) => {
     const totalActivities = activities.length;
@@ -57,6 +49,14 @@ const Profile = () => {
       favoriteActivity,
     });
   };
+
+  useEffect(() => {
+    const savedUsername = localStorage.getItem("username");
+    if (savedUsername) {
+      setUsername(savedUsername);
+    }
+    fetchActivities();
+  }, [fetchActivities]);
 
   const handleUsernameChange = (e) => {
     const newUsername = e.target.value;

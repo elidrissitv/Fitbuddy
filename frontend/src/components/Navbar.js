@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import fitbuddyLogo from "../components/fitbuddy.png";
+import { FaSignOutAlt } from "react-icons/fa";
 
 const Navbar = () => {
   const [darkMode, setDarkMode] = useState(false);
   const [username, setUsername] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const savedUsername = localStorage.getItem("username");
@@ -20,6 +22,15 @@ const Navbar = () => {
       document.documentElement.classList.remove("dark");
     }
   }, [darkMode]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("username");
+    navigate("/auth");
+  };
+
+  if (!username) {
+    return null;
+  }
 
   return (
     <nav className="bg-white dark:bg-gray-800 shadow-lg sticky top-0 z-50">
@@ -79,11 +90,13 @@ const Navbar = () => {
               {darkMode ? "🌞" : "🌙"}
             </button>
 
-            {username && (
-              <span className="text-gray-700 dark:text-gray-200 font-medium px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-full">
-                {username}
-              </span>
-            )}
+            <button
+              onClick={handleLogout}
+              className="flex items-center text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium"
+            >
+              <FaSignOutAlt className="mr-2" />
+              Déconnexion
+            </button>
           </div>
         </div>
       </div>
