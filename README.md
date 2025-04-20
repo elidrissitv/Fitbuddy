@@ -1,7 +1,7 @@
 # FitBuddy - Application de Suivi d'Activités Physiques
 
 FitBuddy est une application web moderne qui permet aux utilisateurs de suivre leurs activités physiques, participer à des défis et se mesurer aux autres utilisateurs via un classement.
-
+https://fitbuddy-auls.onrender.com/
 ## Fonctionnalités
 
 - 📱 **Tableau de bord personnalisé** : Visualisez vos statistiques d'activités
