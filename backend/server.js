@@ -32,15 +32,13 @@ app.use("/api/activities", activityRoutes);
 app.use("/api/challenges", challengeRoutes);
 app.use("/api/leaderboard", leaderboardRoutes);
 
-// Serve static files in production
-if (process.env.NODE_ENV === "production") {
-  // Set static folder
-  app.use(express.static(path.join(__dirname, "../frontend/build")));
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, "../frontend/build")));
 
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../frontend/build", "index.html"));
-  });
-}
+// The "catchall" handler: for any request that doesn't match one above, send back React's index.html file.
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend/build", "index.html"));
+});
 
 // MongoDB Connection
 console.log(
