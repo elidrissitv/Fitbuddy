@@ -14,7 +14,7 @@
 
 ### 🎯 Activités
 
-- Enregistrement d’activités variées : course, yoga, musculation, vélo, natation, etc.
+- Enregistrement d'activités variées : course, yoga, musculation, vélo, natation, etc.
 - Suivi de la **durée** et de la **distance**
 - Historique détaillé des séances
 
@@ -72,7 +72,7 @@ cd ../backend
 npm install
 ```
 
-### 3. Configuration de l’environnement
+### 3. Configuration de l'environnement
 
 Créer un fichier `.env` dans le dossier `backend` avec le contenu suivant :
 
@@ -164,7 +164,7 @@ FitBuddy/
 ### 👥 Utilisateurs
 
 - `GET /api/users` : Obtenir la liste des utilisateurs
-- `GET /api/users/:id` : Obtenir les infos d’un utilisateur
+- `GET /api/users/:id` : Obtenir les infos d'un utilisateur
 - `POST /api/users` : Créer un nouvel utilisateur
 
 ### 🏃 Activités
@@ -183,7 +183,7 @@ FitBuddy/
 
 ## 🎨 Personnalisation
 
-L’interface est développée avec Tailwind CSS, facilitant une personnalisation rapide grâce aux classes utilitaires.  
+L'interface est développée avec Tailwind CSS, facilitant une personnalisation rapide grâce aux classes utilitaires.  
 🌓 **Support du mode sombre inclus !**
 
 ---
@@ -204,7 +204,7 @@ Voici comment contribuer :
 ## 📄 Licence
 
 Distribué sous la licence MIT.  
-Voir le fichier `LICENSE.md` pour plus d’informations.
+Voir le fichier `LICENSE.md` pour plus d'informations.
 
 ---
 
@@ -218,4 +218,4 @@ Voir le fichier `LICENSE.md` pour plus d’informations.
 
 - La communauté React pour leur superbe écosystème
 - Les contributeurs de Tailwind CSS pour leur flexibilité de design
-- L’équipe MongoDB pour leur base de données performante
+- L'équipe MongoDB pour leur base de données performante
