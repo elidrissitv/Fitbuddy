@@ -16,8 +16,19 @@ console.log("Variables d'environnement chargées:", {
 
 const app = express();
 
+// Configuration CORS
+const corsOptions = {
+  origin:
+    process.env.NODE_ENV === "production"
+      ? ["https://fitbuddy-auls.onrender.com"]
+      : ["http://localhost:3000"],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
+};
+
 // Middleware
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Routes API
