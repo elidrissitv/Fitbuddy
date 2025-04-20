@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import { getChallenges } from "../services/api";
 
 const Challenges = () => {
   const [challenges, setChallenges] = useState([]);
@@ -9,11 +9,9 @@ const Challenges = () => {
   useEffect(() => {
     const fetchChallenges = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:5000/api/challenges"
-        );
-        console.log("Données reçues:", JSON.stringify(response.data, null, 2));
-        setChallenges(response.data);
+        const data = await getChallenges();
+        console.log("Données reçues:", JSON.stringify(data, null, 2));
+        setChallenges(data);
         setLoading(false);
       } catch (err) {
         setError("Erreur lors du chargement des défis");

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Leaderboard from "../components/Leaderboard";
 import ActivityChart from "../components/ActivityChart";
-import axios from "axios";
+import { getActivities } from "../services/api";
 
 const Dashboard = () => {
   const [activities, setActivities] = useState([]);
@@ -16,12 +16,10 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchActivities = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:5000/api/activities"
-        );
-        setActivities(response.data);
+        const data = await getActivities();
+        setActivities(data);
         setLoading(false);
-        calculateStats(response.data);
+        calculateStats(data);
       } catch (err) {
         setError("Erreur lors du chargement des activités");
         setLoading(false);
