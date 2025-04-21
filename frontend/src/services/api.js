@@ -72,4 +72,16 @@ export const getChallenges = async () => {
   }
 };
 
+export const joinChallenge = async (challengeId, userId) => {
+  try {
+    const response = await api.put(`/challenges/${challengeId}/join`, {
+      userId,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Erreur lors de la participation au défi:", error);
+    throw error;
+  }
+};
+
 export default api;

@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { getChallenges } from "../services/api";
+import { getChallenges, joinChallenge } from "../services/api";
 
 const Challenges = () => {
   const [challenges, setChallenges] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [joiningChallenge, setJoiningChallenge] = useState(null);
 
   useEffect(() => {
     const fetchChallenges = async () => {
@@ -21,6 +22,28 @@ const Challenges = () => {
 
     fetchChallenges();
   }, []);
+
+  const handleJoinChallenge = async (challengeId) => {
+    try {
+      setJoiningChallenge(challengeId);
+      const userId = localStorage.getItem("userId");
+      if (!userId) {
+        setError("Vous devez être connecté pour rejoindre un défi");
+        return;
+      }
+
+      const updatedChallenge = await joinChallenge(challengeId, userId);
+      setChallenges(
+        challenges.map((challenge) =>
+          challenge._id === challengeId ? updatedChallenge : challenge
+        )
+      );
+    } catch (err) {
+      setError("Erreur lors de la participation au défi");
+    } finally {
+      setJoiningChallenge(null);
+    }
+  };
 
   if (loading)
     return (
@@ -49,6 +72,11 @@ const Challenges = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {challenges.map((challenge) => {
+          const isJoining = joiningChallenge === challenge._id;
+          const isParticipant = challenge.participants?.some(
+            (participant) => participant._id === localStorage.getItem("userId")
+          );
+
           console.log("Challenge:", challenge);
           console.log("Participants:", challenge.participants);
           return (
@@ -117,8 +145,20 @@ const Challenges = () => {
                 </div>
 
                 <footer className="mt-6">
-                  <button className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200 font-medium">
-                    Rejoindre le défi
+                  <button
+                    onClick={() => handleJoinChallenge(challenge._id)}
+                    disabled={isJoining || isParticipant}
+                    className={`w-full ${
+                      isParticipant
+                        ? "bg-green-600 cursor-not-allowed"
+                        : "bg-blue-600 hover:bg-blue-700"
+                    } text-white px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200 font-medium`}
+                  >
+                    {isJoining
+                      ? "Rejoindre..."
+                      : isParticipant
+                      ? "Déjà participant"
+                      : "Rejoindre le défi"}
                   </button>
                 </footer>
               </div>
